@@ -314,6 +314,14 @@ This project is licensed under the **ISC License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
 
+### Screenshot 
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/d127d824-d21a-4472-8280-0894951f4fb6" />
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/0aef404d-3a7a-48e6-91b7-464d4066cd42" />
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/607a9157-d33e-492c-86e6-016960110859" />
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/ea4dd77a-ef10-4965-aa76-5fedea15f06a" />
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/15aa5a0f-6b09-4dec-8328-dbacebe188fa" />
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/8f105705-ecb0-4bc6-94d9-f9562c19a44f" />
+<img width="2047" height="1254" alt="Image" src="https://github.com/user-attachments/assets/0a366b63-118f-4761-ab0d-6b0bff0b0555" />
 ### 🌟 Star this repo if you find it useful! 🌟
 
 **Made with ❤️ by the Intiyaj Raj**
