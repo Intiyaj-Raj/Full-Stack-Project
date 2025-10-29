@@ -1,3 +1,4 @@
+const { response } = require("express")
 const productCollection = require("../models/product")
 
 
@@ -40,7 +41,47 @@ const getAllProductController = async (req, res) => {
 
 }
 
+const deleteProductController = async (req, res) => {
+    try {
+        const productId = req.params.abc
+        await productCollection.findByIdAndDelete(productId)
+        res.status(200).json({ message: "Sucessfully delete." })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error." })
+    }
+}
+
+const editValueDataController = async (req, res) => {
+    try {
+        const productId = req.params.abc
+        const record = await productCollection.findById(productId)
+        res.status(200).json({ data: record })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+const productUpdateControler = async (req, res) => {
+    try {
+        const { Pname, Pprice, Cat, Pstatus } = req.body
+        const productId = req.params.abc
+
+        await productCollection.findByIdAndUpdate(productId, {
+            productName: Pname,
+            productPrice: Pprice,
+            productCategory: Cat,
+            productStatus: Pstatus,
+        });
+        res.status(200).json({ message: "Successfully update." })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error." })
+    }
+}
+
 module.exports = {
     addadminproductController,
-    getAllProductController
+    getAllProductController,
+    deleteProductController,
+    editValueDataController,
+    productUpdateControler
 }

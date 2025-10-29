@@ -10,7 +10,6 @@ const AdminProducts = () => {
     const [product, setProduct] = useState([])
 
     async function getAllProducts() {
-
         try {
             const response = await fetch("/api/getproduct")
             const record = await response.json()
@@ -31,7 +30,24 @@ const AdminProducts = () => {
         getAllProducts()
     }, [])
 
-
+    async function handleDelete(id) {
+        try {
+            const response = await fetch(`/api/productdelete/${id}`, {
+                method: "DELETE"
+            })
+            const result = await response.json()
+            if (response.ok) {
+                toast.success(result.message)
+                getAllProducts()
+            }
+            else {
+                toast.error(result.message)
+            }
+            // console.log(result)
+        } catch (error) {
+            toast.error(error)
+        }
+    }
 
     return (
         <div className='flex mt-16'>
@@ -52,14 +68,19 @@ const AdminProducts = () => {
                                 <h3 className='text-xl font-semibold text-gray-700'>{item.productName}</h3>
                                 <p className='text-sm text-gray-600'>Category:- {item.productCategory}</p>
                                 <p className='text-green-600 font-bold mt-1'>₹ {item.productPrice}</p>
-                                <p className='text-blue-700 font-semibold mt-1'>In-Stock</p>
+
+                                {
+                                    item.productStatus === "In-Stock" ? <p className='text-blue-700 font-semibold mt-1'>In-Stock</p> : <p className='text-red-700 font-semibold mt-1'>Out-Of-Stock</p>
+                                }
+
+
 
                                 <div className='flex flex-col sm:flex-row justify-between mt-4'>
-                                    <Link to={'/admin/edit-product'} className='flex items-center gap-3 text-xl text-blue-500 hover:text-blue-800'>
+                                    <Link to={`/admin/edit-product/${item._id}`} className='flex items-center gap-3 text-xl text-blue-500 hover:text-blue-800'>
                                         <FaEdit />
                                     </Link>
 
-                                    <Link className='flex items-center gap-3 text-xl text-red-500 hover:text-red-800'>
+                                    <Link onClick={() => { handleDelete(item._id) }} className='flex items-center gap-3 text-xl text-red-500 hover:text-red-800'>
                                         <AiFillDelete />
                                     </Link>
                                 </div>
