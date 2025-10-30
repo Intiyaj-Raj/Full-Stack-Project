@@ -5,15 +5,25 @@ import { toast } from 'react-hot-toast'
 const AddProducts = () => {
     const navigate = useNavigate()
     const [product, setProduct] = useState({ Pname: "", Price: "", Cat: "" })
+    const [Pimage, setPImage] = useState("")
 
     async function handleForm(e) {
         e.preventDefault()
         // console.log(product)
+
+        const formallData = new FormData()
+        formallData.append("Pname", product.Pname)
+        formallData.append("Price", product.Price)
+        formallData.append("Cat", product.Cat)
+        formallData.append("image", Pimage)
+
+
+        console.log(Pimage)
+        console.log(formallData)
         try {
             const response = await fetch("/api/addadminproduct", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(product)
+                body: formallData
             })
 
             const record = await response.json()
@@ -42,7 +52,9 @@ const AddProducts = () => {
                 <h1 className='text-3xl font-bold mb-6 text-gray-700'>Add Product 🛍️</h1>
                 <button onClick={() => { navigate("/admin/adminproduct") }} className='bg-gray-300 px-4 py-2 rounded hover:bg-gray-400'>Back</button>
 
-                <form action="" className='bg-white shadow-slate-500 shadow-md rounded-xl p-6 max-w-3xl mx-auto space-y-6 mt-5 ' onSubmit={handleForm}>
+                <form action=""
+                    encType='multipart/form-data'
+                    className='bg-white shadow-slate-500 shadow-md rounded-xl p-6 max-w-3xl mx-auto space-y-6 mt-5 ' onSubmit={handleForm}>
                     <label htmlFor="" className='block text-gray-700 font-medium'>Product Name</label>
                     <input type="text" value={product.Pname} onChange={handleChange} name="Pname" id="" className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' />
 
@@ -63,7 +75,7 @@ const AddProducts = () => {
 
 
                     <label htmlFor="" className='block text-gray-700 font-medium'>Product Image</label>
-                    <input type="file" name="" id="" className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' />
+                    <input type="file" name="image" onChange={(e) => { setPImage(e.target.files[0]) }} id="" className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' />
                     <div className='text-right'>
                         <button className='bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700'>Add Product</button>
                     </div>

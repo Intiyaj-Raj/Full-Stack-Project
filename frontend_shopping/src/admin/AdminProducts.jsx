@@ -64,7 +64,7 @@ const AdminProducts = () => {
                     {
                         product.map((item, index) => (
                             <div key={index} className='bg-white rounded-xl shadow-md p-4 hover:shadow-xl border border-gray-300'>
-                                <img src="https://tse4.mm.bing.net/th/id/OIP.ed6uq4FzcBS4dEKEw_JkZgHaF4?pid=Api&P=0&h=180" alt="" className='w-full h-32 object-contain rounded-md mb-4 border border-gray-300' />
+                                <img src={`/uploads/${item.productImage}`} alt="" className='w-full h-32 object-contain rounded-md mb-4 border border-gray-300' />
                                 <h3 className='text-xl font-semibold text-gray-700'>{item.productName}</h3>
                                 <p className='text-sm text-gray-600'>Category:- {item.productCategory}</p>
                                 <p className='text-green-600 font-bold mt-1'>₹ {item.productPrice}</p>

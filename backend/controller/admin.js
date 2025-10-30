@@ -5,8 +5,8 @@ const productCollection = require("../models/product")
 const addadminproductController = async (req, res) => {
 
     try {
+        const PImage = req.file.filename
         const { Pname, Price, Cat } = req.body
-
         if (!Pname || !Price || !Cat) {
             return res.status(400).json({ message: "All fields are required." })
         }
@@ -14,7 +14,8 @@ const addadminproductController = async (req, res) => {
         const record = new productCollection({
             productName: Pname,
             productPrice: Price,
-            productCategory: Cat
+            productCategory: Cat,
+            productImage: PImage
         })
 
 

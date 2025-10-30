@@ -1,5 +1,6 @@
 const userCollection = require("../models/user")
 const bcrypt = require("bcrypt")
+const productCollection = require("../models/product")
 
 // for registration page
 const regDataController = async (req, res) => {
@@ -67,7 +68,17 @@ const loginDataController = async (req, res) => {
 }
 
 
+const userProductController = async (req, res) => {
+    try {
+        const record = await productCollection.find({ productStatus: "In-Stock" })
+        res.status(200).json({ data: record })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error." })
+    }
+}
+
 module.exports = {
     regDataController,
-    loginDataController
+    loginDataController,
+    userProductController
 }

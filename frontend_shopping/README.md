@@ -126,6 +126,7 @@ command: npm i express nodemon mongoose cors dotenv
 command: npm i mongoose
 command: npm i cors
 command: npm i bcrypt
+command: npm i multer
 
 add nodemon in package.json file 
 "serverRun":"nodemon app.js" (in script section) 

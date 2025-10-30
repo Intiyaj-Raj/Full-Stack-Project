@@ -1,7 +1,27 @@
 import React from 'react'
 import Category from '../pages/Category'
-
+import { useEffect } from 'react'
+import { toast } from 'react-hot-toast'
+import { useState } from 'react'
 const Product = () => {
+
+    const [product, setProduct] = useState([])
+
+    async function productData() {
+        try {
+            const response = await fetch("/api/userproducts")
+            const record = await response.json()
+            setProduct(record.data)
+
+        } catch (error) {
+            toast.error(error)
+        }
+    }
+
+    useEffect(() => {
+        productData()
+    }, [])
+
     return (
         <div className='max-w-7xl mx-auto py-10 px-6'>
 
@@ -11,13 +31,13 @@ const Product = () => {
 
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4'>
                 {
-                    [1, 2, 3, 4, 5, 6, 7, 8].map(() => (
-                        <div className='bg-green-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition border-2 border-gray-200'>
-                            <img src="https://tse2.mm.bing.net/th/id/OIP.zMFtlEEJqLUrX3QgDoG-qwHaE8?pid=Api&P=0&h=180" alt="" className='w-full h-32 object-cover rounded' />
-                            <h3 className='mt-2 font-medium text-gray-700'>Coffee</h3>
+                    product.map((item, index) => (
+                        <div key={index} className='bg-green-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition border-2 border-gray-300'>
+                            <img src={`/uploads/${item.productImage}`} alt="" className='w-full h-32 object-contain rounded' />
+                            <h3 className='mt-2 font-medium text-gray-700'>{item.productName}</h3>
                             <p className='mt2
-                             font-normal text-gray-500'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Atque, laboriosam.</p>
-                            <p className='text-green-600 font-bold'>$56</p>
+                             font-normal text-gray-500'>{item.productCategory}</p>
+                            <p className='text-green-600 font-bold'>₹ {item.productPrice}</p>
                             <button className='w-full bg-purple-500 text-white mt-2 py-1 rounded hover:bg-purple-800'>Add To Cart</button>
                         </div>
                     ))
