@@ -28,6 +28,9 @@ apiRoutes.get("/editvaluedata/:abc", adminController.editValueDataController)
 apiRoutes.post("/productupdate/:abc", adminController.productUpdateControler)
 apiRoutes.get("/userproducts", userController.userProductController)
 apiRoutes.post("/userquery", userController.userQueryController)
-
+apiRoutes.get("/userallquery", adminController.userAllQueryController)
+apiRoutes.delete("/querydelete/:abc", adminController.queryDeleteController)
+apiRoutes.get("/querysingledata/:abc", adminController.querySingleDataController)
+apiRoutes.post("/mailreply/:abc", adminController.mailReplyController)
 
 module.exports = apiRoutes

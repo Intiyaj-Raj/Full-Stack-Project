@@ -1,6 +1,7 @@
-const { response } = require("express")
+const { response, json } = require("express")
 const productCollection = require("../models/product")
-
+const queryCollecion = require("../models/query")
+const query = require("../models/query")
 
 const addadminproductController = async (req, res) => {
 
@@ -79,10 +80,51 @@ const productUpdateControler = async (req, res) => {
     }
 }
 
+
+const userAllQueryController = async (req, res) => {
+    try {
+        const record = await queryCollecion.find()
+        res.status(200).json({ data: record })
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error." })
+    }
+}
+
+const queryDeleteController = async (req, res) => {
+    try {
+        const queryId = req.params.abc
+        await queryCollecion.findByIdAndDelete(queryId)
+        res.status(200).json({ message: "Successfully delete" })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+const querySingleDataController = async (req, res) => {
+    try {
+        const queryId = req.params.abc
+        const record = await queryCollecion.findById(queryId)
+        res.status(200).json({ data: record })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+const mailReplyController = async (req, res) => {
+    // const { to, sub, body } = req.body
+    // const queryId = req.params.abc
+
+
+}
 module.exports = {
     addadminproductController,
     getAllProductController,
     deleteProductController,
     editValueDataController,
-    productUpdateControler
+    productUpdateControler,
+    userAllQueryController,
+    queryDeleteController,
+    querySingleDataController,
+    mailReplyController
 }
