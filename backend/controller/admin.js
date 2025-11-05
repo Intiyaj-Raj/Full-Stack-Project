@@ -120,8 +120,8 @@ const mailReplyController = async (req, res) => {
             port: 587,
             secure: false,
             auth: {
-                user: "intiyajraj786@gmail.com",
-                pass: "drwh ckgz xkyn ggkb",
+                user: "intiyaj@gmail.com",
+                pass: "drwgkb",
             },
         });
 
