@@ -92,6 +92,7 @@ cd frontend_shopping
 
 ```bash
 npm install
+
 ```
 
 **3️⃣ Setup Tailwind CSS**
@@ -127,6 +128,7 @@ command: npm i mongoose
 command: npm i cors
 command: npm i bcrypt
 command: npm i multer
+command: npm i nodemailer  // nodemailer used to handle query reply
 
 add nodemon in package.json file 
 "serverRun":"nodemon app.js" (in script section) 

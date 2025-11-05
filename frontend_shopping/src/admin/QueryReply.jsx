@@ -29,7 +29,8 @@ const QueryReply = () => {
                 toast.error(result.message)
             }
 
-        } catch (error) {
+        }
+        catch (error) {
             toast.error(result.message)
         }
     }
@@ -37,16 +38,29 @@ const QueryReply = () => {
         queryData();
     }, [])
 
-    function handleForm(e) {
+    async function handleForm(e) {
         e.preventDefault();
 
-        fetch(`/api/mailreply/${id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(query)
-        });
+        try {
+            const response = await fetch(`/api/mailreply/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(query)
+            });
+            const result = await response.json()
+
+            if (response.ok) {
+                toast.success(result.message)
+                navigate("/admin/adminquery")
+            }
+            else {
+                toast.error(result.message)
+            }
+        } catch (error) {
+            toast.error(error)
+        }
     }
 
 
@@ -66,7 +80,7 @@ const QueryReply = () => {
                 <div className='bg-white shadow-xl shadow-gray-300 rounded-xl p-6 max-w-3xl mx-auto border border-gray-300 space-y-6 mt-4'>
                     <form action="" onSubmit={handleForm}>
                         <label htmlFor="" className='block text-gray-700 font-medium mb-1'>To</label>
-                        <input type="text" name="" value={query.to} id="" className='w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600' />
+                        <input type="text" name="to" value={query.to} id="" className='w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600' />
 
                         <label htmlFor="" className='block text-gray-700 font-medium mb-1'>From</label>
                         <input type="text" name="" value={"intiyajraj786@gmail.com"} id="" className='w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600' />

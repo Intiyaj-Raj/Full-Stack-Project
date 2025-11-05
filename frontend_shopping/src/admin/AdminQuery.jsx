@@ -69,7 +69,7 @@ const AdminQuery = () => {
                                 <th className='px-6 py-2'>Action-2</th>
                             </tr>
                         </thead>
-                        {
+                        {query.length === 0 ? <p className='text-center text-red-600 font-bold'>No Query's here...</p> :
                             query.map((item, index) => (
                                 <tbody key={index} className='bg-white border-b border-gray-300'>
                                     <tr className='bg-white border-b border-gray-300 text-gray-800'>

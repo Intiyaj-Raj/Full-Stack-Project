@@ -5,11 +5,14 @@ import { toast } from 'react-hot-toast'
 import { useState } from 'react'
 const Product = () => {
 
+    const [category, setCategory] = useState("All")
+
     const [product, setProduct] = useState([])
 
-    async function productData() {
+    async function productData(selectCategory = "All") {
+
         try {
-            const response = await fetch("/api/userproducts")
+            const response = await fetch(`/api/userproducts?category=${selectCategory}`)
             const record = await response.json()
             setProduct(record.data)
 
@@ -19,13 +22,14 @@ const Product = () => {
     }
 
     useEffect(() => {
-        productData()
-    }, [])
+        productData(category)
+    }, [category])
+
 
     return (
         <div className='max-w-7xl mx-auto py-10 px-6'>
 
-            <Category />
+            <Category onselectCat={setCategory} />
 
             <h2 className='text-2xl font-semibold text-center text-gray-800 mb-6 mt-6'>Products 🔥</h2>
 

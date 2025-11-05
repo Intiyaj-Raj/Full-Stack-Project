@@ -2,7 +2,7 @@ const { response, json } = require("express")
 const productCollection = require("../models/product")
 const queryCollecion = require("../models/query")
 const query = require("../models/query")
-
+const nodemailer = require("nodemailer")
 const addadminproductController = async (req, res) => {
 
     try {
@@ -112,9 +112,36 @@ const querySingleDataController = async (req, res) => {
 }
 
 const mailReplyController = async (req, res) => {
-    // const { to, sub, body } = req.body
-    // const queryId = req.params.abc
+    const { to, sub, body } = req.body
+    const queryId = req.params.abc
+    try {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: "intiyajraj786@gmail.com",
+                pass: "drwh ckgz xkyn ggkb",
+            },
+        });
 
+        const info = await transporter.sendMail({
+            from: '"ShopBag" <intiyajraj786@gmail.com>',
+            to: to,
+            subject: sub,
+            text: body,
+            html: body,
+        });
+
+        await queryCollecion.findByIdAndUpdate(queryId, {
+            queryStatus: "Read"
+        })
+        res.status(200).json({ message: "Successfully Reply." })
+
+    } catch (error) {
+
+        res.status(500).json({ message: "Internal server error." })
+    }
 
 }
 module.exports = {
