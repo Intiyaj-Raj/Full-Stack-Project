@@ -118,6 +118,9 @@ command: npx tailwindcss init -p
 React icon 
 command: npm install react-icons
 npm install react-hot-toast
+
+redux setup (add to cart)\
+command: npm install @reduxjs/toolkit react-redux
 ```
 
 ```bash
