@@ -1,5 +1,34 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
+
+    const token = localStorage.getItem("token")
+
+    const response = await fetch("/api/cart/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(cartData)
+    })
+
+    return await response.json()
+})
+
+export const fetchCart = createAsyncThunk("cart/fetch", async (userId) => {
+    let token = localStorage.getItem("token")
+    const response = await fetch(`/api/cart/${userId}`, {
+
+
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
+    })
+    return await response.json()
+})
 const initialState = {
     cart: [],
     TotalPrice: 0,
@@ -59,6 +88,17 @@ export const cartSlice = createSlice({
             state.TotalQuantity = totalQuantity
         }
     },
+    extraReducers: (builder) => {
+        builder.addCase(saveCart.fulfilled, (state, actions) => {
+            console.log("Cart Save :- ", actions.payload)
+        });
+        builder.addCase(fetchCart.fulfilled, (state, actions) => {
+            console.log("FetchData :- ", actions.payload)
+            state.cart = actions.payload.cartItems || [];
+            state.TotalPrice = actions.payload.totalPrice || 0;
+            state.totalQuantity = actions.payload.totalQuantity || 0;
+        })
+    }
 })
 
 

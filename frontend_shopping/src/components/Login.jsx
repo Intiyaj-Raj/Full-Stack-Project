@@ -27,8 +27,12 @@ const Login = () => {
 
             if (response.ok) {
                 toast.success(result.message)
+                localStorage.setItem("token", result.token)
+                localStorage.setItem("user", result.data._id)
+                // console.log(result)
                 navigate("/") // successfuly login then go to homepage
             }
+
             else {
                 toast.error(result.message)
             }
@@ -51,11 +55,11 @@ const Login = () => {
 
                 <form action="" onSubmit={handleForm}>
                     <label className='block text-sm text-gray-700 mb-2' htmlFor="">Email</label>
-                    <input type="text" name="loginEmail" value={login.loginEmail} id="" placeholder="Enter your email ..." className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' onChange={handleChange} />
+                    <input type="text" name="loginEmail" value={login.loginEmail} placeholder="Enter your email ..." className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' onChange={handleChange} />
 
                     <label htmlFor="" className='block text-sm text-gray-700 mb-2'>Password</label>
                     <div className='relative'>
-                        <input type={showPassword ? "password" : "text"} name="loginPass" value={login.loginPass} id="" placeholder="Enter your password ..." className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' onChange={handleChange} />
+                        <input type={showPassword ? "password" : "text"} name="loginPass" value={login.loginPass} placeholder="Enter your password ..." className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' onChange={handleChange} />
 
                         <button
                             type='button' onClick={() => { setShowPassword(!showPassword) }}

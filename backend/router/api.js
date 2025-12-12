@@ -3,6 +3,7 @@ const userController = require("../controller/user")
 const user = require("../models/user")
 const adminController = require("../controller/admin")
 const uploads = require("../middleware/multer")
+const auth = require("../middleware/auth")
 
 
 
@@ -32,5 +33,8 @@ apiRoutes.get("/userallquery", adminController.userAllQueryController)
 apiRoutes.delete("/querydelete/:abc", adminController.queryDeleteController)
 apiRoutes.get("/querysingledata/:abc", adminController.querySingleDataController)
 apiRoutes.post("/mailreply/:abc", adminController.mailReplyController)
+apiRoutes.post("/cart/save/", auth, userController.saveCartDataController)
+apiRoutes.get("/search", userController.searchController)
+apiRoutes.get("/cart/:id", auth, userController.getCartController)
 
 module.exports = apiRoutes

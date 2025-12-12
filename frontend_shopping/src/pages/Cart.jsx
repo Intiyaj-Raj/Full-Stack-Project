@@ -4,20 +4,65 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { MdDeleteSweep } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
-import { cartTotal, DecrementQunatity, deleteCartItem, IncrementQuantity } from '../features/Cart/CartSlice';
+import { toast } from 'react-hot-toast';
+import { cartTotal, DecrementQunatity, deleteCartItem, fetchCart, IncrementQuantity, saveCart } from '../features/Cart/CartSlice';
+import { useState } from 'react';
 const Cart = () => {
 
     const navigate = useNavigate()
     const cartData = useSelector((state) => state.Cart.cart)
-
-    const dispatch = useDispatch()
-
     const cartAllTotal = useSelector((state) => state.Cart)
+    const dispatch = useDispatch();
+    const [checkingAuth, setCheckingAuth] = useState(true)
+
 
     useEffect(() => {
         dispatch(cartTotal());
     }, [cartData, dispatch]);
 
+    useEffect(() => {
+
+        const userId = localStorage.getItem("user")
+        let token = localStorage.getItem("token")
+
+        if (token && userId && cartData.length > 0) {
+            dispatch(saveCart({
+                userId: userId,
+                cartItems: cartData,
+                totalPrice: cartAllTotal.TotalPrice,
+                totalQuantity: cartAllTotal.TotalQuantity
+            }))
+        }
+
+    }, [cartData, cartAllTotal, dispatch])
+
+    useEffect(() => {
+        let token = localStorage.getItem("token")
+        let userId = localStorage.getItem("user")
+
+        if (!token) {
+            toast.error("Please login to access your cart")
+            navigate("/login");
+            return;
+        }
+        if (userId) {
+            dispatch(fetchCart(userId))
+            setCheckingAuth(false)
+        }
+        else {
+            setCheckingAuth(false)
+        }
+
+    }, [dispatch, navigate])
+
+    if (checkingAuth) {
+        return (
+            <div className='fixed inset-0 flex justify-center bg-black bg-opacity-40'>
+                <div className='bg-white p-6 rounded-lg shadow-lg'>Loading Cart....</div>
+
+            </div>
+        )
+    }
 
     return (
         <div className='fixed inset-0 bg-black bg-opacity-45 backdrop-blur-sm flex justify-center items-center z-50'>

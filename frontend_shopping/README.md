@@ -132,6 +132,7 @@ command: npm i cors
 command: npm i bcrypt
 command: npm i multer
 command: npm i nodemailer  // nodemailer used to handle query reply
+command: npm i jsonwebtoken // for create token
 
 add nodemon in package.json file 
 "serverRun":"nodemon app.js" (in script section) 

@@ -2,6 +2,9 @@ const userCollection = require("../models/user")
 const bcrypt = require("bcrypt")
 const productCollection = require("../models/product")
 const queryCollecion = require("../models/query")
+const cartCollection = require("../models/cart")
+const jwt = require("jsonwebtoken")
+
 // for registration page
 const regDataController = async (req, res) => {
     try {
@@ -32,10 +35,9 @@ const regDataController = async (req, res) => {
     catch (error) {
         res.status(500).json({ message: "Internal server error." })
     }
-}
+};
 
 // for login page
-
 const loginDataController = async (req, res) => {
 
     try {
@@ -58,14 +60,21 @@ const loginDataController = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials." })
         }
 
-        res.status(200).json({ message: "Successfully login" })
+        const token = jwt.sign({ id: userCheck._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "2d" })
 
+        res.status(200).json({
+            message: "Successfully login",
+            token: token,
+            data: userCheck
+        })
     }
     catch (error) {
         res.status(500).json({ message: "Internal server error." })
     }
 
-}
+};
 
 
 const userProductController = async (req, res) => {
@@ -84,7 +93,7 @@ const userProductController = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Internal server error." })
     }
-}
+};
 
 const userQueryController = async (req, res) => {
     try {
@@ -100,11 +109,66 @@ const userQueryController = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Internal server error." })
     }
-}
+};
+
+const saveCartDataController = async (req, res) => {
+    try {
+        const { userId, cartItems, totalPrice, totalQuantity } = req.body
+
+        let cart = await cartCollection.findOne({ userId })
+
+        if (cart) {
+            cart.cartItems = cartItems;
+            cart.totalPrice = totalPrice;
+            cart.totalQuantity = totalQuantity;
+            await cart.save()
+        }
+        else {
+            cart = new cartCollection({
+                userId: userId,
+                cartItems: cartItems,
+                totalPrice: totalPrice,
+                totalQuantity: totalQuantity
+            });
+            await cart.save()
+        }
+
+        res.status(200).json({ message: "Cart Save Successfully" })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+};
+
+const getCartController = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const cart = await cartCollection.findOne({ userId })
+        res.status(200).json(cart)
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error." })
+    }
+};
+
+const searchController = async (req, res) => {
+    try {
+        const keyword = req.query.q
+        const result = await productCollection.find({
+            productName: { $regex: keyword, $options: "i" },
+            productStatus: "In-Stock"
+        })
+
+        res.status(200).json({ data: result })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error." })
+    }
+};
 
 module.exports = {
     regDataController,
     loginDataController,
     userProductController,
-    userQueryController
+    userQueryController,
+    saveCartDataController,
+    searchController,
+    getCartController
 }
