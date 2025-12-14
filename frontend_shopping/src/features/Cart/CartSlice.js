@@ -91,6 +91,7 @@ export const cartSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(saveCart.fulfilled, (state, actions) => {
             console.log("Cart Save :- ", actions.payload)
+
         });
         builder.addCase(fetchCart.fulfilled, (state, actions) => {
             console.log("FetchData :- ", actions.payload)

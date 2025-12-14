@@ -26,11 +26,17 @@ const Login = () => {
 
 
             if (response.ok) {
-                toast.success(result.message)
-                localStorage.setItem("token", result.token)
-                localStorage.setItem("user", result.data._id)
-                // console.log(result)
-                navigate("/") // successfuly login then go to homepage
+                if (result.data && result.data.userEmail === "admin@gmail.com") {
+                    navigate("/admin/dashboard")
+                    toast.success("Hello Admin.👤")
+                }
+                else {
+                    toast.success(result.message)
+                    localStorage.setItem("token", result.token)
+                    localStorage.setItem("user", result.data._id)
+                    navigate("/") // successfuly login then go to homepage
+                }
+
             }
 
             else {

@@ -36,5 +36,8 @@ apiRoutes.post("/mailreply/:abc", adminController.mailReplyController)
 apiRoutes.post("/cart/save/", auth, userController.saveCartDataController)
 apiRoutes.get("/search", userController.searchController)
 apiRoutes.get("/cart/:id", auth, userController.getCartController)
+apiRoutes.post("/create-order", userController.OrderController)
+apiRoutes.post("/verify", auth, userController.verifyController)
+
 
 module.exports = apiRoutes

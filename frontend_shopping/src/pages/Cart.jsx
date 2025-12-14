@@ -64,6 +64,70 @@ const Cart = () => {
         )
     }
 
+    function handlePayment() {
+        const amount = cartAllTotal.totalPrice;
+        const currency = "INR";
+        const receipt = "receipt#1";
+
+
+        fetch("/api/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                amount: amount,
+                currency: currency,
+                receipt: receipt
+            })
+        }).then((res) => {
+            return res.json()
+        }).then((order) => {
+            const options = {
+                key: "rzp_test_RqkiofRd3t8eAj",
+                amount: order.amount,
+                currency: order.currency,
+                name: "ShopBag", // write your website name
+                description: "Testing Mode",
+                order_id: order.id,
+                handler: function (response) {
+                    let token = localStorage.getItem("token")
+                    let userID = localStorage.getItem("user")
+
+                    fetch('/api/verify', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            amount,
+                            userID
+                        })
+                    }).then((res) => {
+                        return res.json()
+                    }).then((result) => {
+                        if (result.success) {
+                            toast.success(result.message)
+                        }
+                        else {
+                            toast.error(result.message)
+                        }
+                    })
+                },
+                prefill: {
+                    name: "Intiyaj",
+                    email: "intiyajraj786@gmail.com", // user email 
+                    contact: "123435534"
+                }
+            }
+            const paymentObject = window.Razorpay(options)
+            paymentObject.open()
+        })
+    }
+
+
     return (
         <div className='fixed inset-0 bg-black bg-opacity-45 backdrop-blur-sm flex justify-center items-center z-50'>
 
@@ -104,7 +168,7 @@ const Cart = () => {
                     <p className='text-lg font-semibold text-gray-600'>Total Products Quantity:- <span className='text-gray-700'>{cartAllTotal.TotalQuantity}</span></p>
 
                     <p className='text-lg font-semibold text-gray-700'>Total Price:- <span className='text-green-500'>₹ {cartAllTotal.TotalPrice}</span></p>
-                    <button className='mt-4 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-800'>Checkout</button>
+                    <button className='mt-4 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-800' onClick={handlePayment}>Checkout</button>
                 </div>
 
             </div>

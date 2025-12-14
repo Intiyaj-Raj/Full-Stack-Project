@@ -19,4 +19,12 @@ const auth = (req, res, next) => {
     }
 }
 
+// const adminAuth = (req, res, next) => {
+//     auth(req, res, () => {
+//         if (req.user.userEmail !== "admin@gmail.com") {
+//             return res.status(403).json({ message: "Access Denied:- Admin Only" })
+//         }
+//         next();
+//     })
+// }
 module.exports = auth
