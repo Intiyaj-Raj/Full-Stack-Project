@@ -18,7 +18,7 @@ const EditProducts = () => {
                 toast.error(result.message)
             }
         } catch (error) {
-            toast.error(error)
+            toast.error("Something went wrong!")
         }
     }
     useEffect(() => {

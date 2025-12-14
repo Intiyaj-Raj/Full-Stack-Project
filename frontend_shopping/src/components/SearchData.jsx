@@ -19,7 +19,7 @@ const SearchData = ({ onClose }) => {
           console.log(result)
           setSearchResult(result.data)
         }).catch((err) => {
-          toast.error(err)
+          toast.error("Something went wrong!")
         })
       }
     }, 300);

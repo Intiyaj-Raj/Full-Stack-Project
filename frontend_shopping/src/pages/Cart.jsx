@@ -65,7 +65,7 @@ const Cart = () => {
     }
 
     function handlePayment() {
-        const amount = cartAllTotal.totalPrice;
+        const amount = cartAllTotal.TotalPrice;
         const currency = "INR";
         const receipt = "receipt#1";
 
@@ -157,7 +157,7 @@ const Cart = () => {
                                         <FaPlus />
                                     </button>
                                 </div>
-                                <MdDeleteSweep className='text-gray-700 hover:text-red-700 text-2xl hover:cursor-pointer' onClick={() => { dispatch(deleteCartItem(value)) }} />
+                                <MdDeleteSweep className='text-gray-700 hover:text-red-700 text-2xl hover:cursor-pointer' onClick={() => { dispatch(deleteCartItem(value)); toast.success("Product removed from cart successfully") }} />
 
                             </li>
                         </ul>

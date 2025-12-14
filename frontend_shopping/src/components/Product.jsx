@@ -21,7 +21,7 @@ const Product = () => {
             setProduct(record.data)
 
         } catch (error) {
-            toast.error(error)
+            toast.error("Something went wrong!")
         }
     }
 
@@ -46,7 +46,7 @@ const Product = () => {
                             <p className='mt2
                              font-normal text-gray-500'>{item.productCategory}</p>
                             <p className='text-green-600 font-bold'>₹ {item.productPrice}</p>
-                            <button onClick={() => { dispatch(addToCart(item)) }} className='w-full bg-purple-500 text-white mt-2 py-1 rounded hover:bg-purple-800'>Add To Cart</button>
+                            <button onClick={() => { dispatch(addToCart(item)); toast.success("Product added to cart successfully") }} className='w-full bg-purple-500 text-white mt-2 py-1 rounded hover:bg-purple-800'>Add To Cart</button>
                         </div>
                     ))
                 }

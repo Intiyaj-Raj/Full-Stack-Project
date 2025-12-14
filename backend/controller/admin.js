@@ -38,7 +38,7 @@ const getAllProductController = async (req, res) => {
         res.status(200).json({ data: record })
 
     } catch (error) {
-        res.status(500).json({ message: "Internal sever error." })
+        res.status(500).json({ message: "Internal server error." })
     }
 
 }
@@ -47,7 +47,7 @@ const deleteProductController = async (req, res) => {
     try {
         const productId = req.params.abc
         await productCollection.findByIdAndDelete(productId)
-        res.status(200).json({ message: "Sucessfully delete." })
+        res.status(200).json({ message: "Successfully delete." })
     } catch (error) {
         res.status(500).json({ message: "Internal server error." })
     }
@@ -65,12 +65,12 @@ const editValueDataController = async (req, res) => {
 
 const productUpdateControler = async (req, res) => {
     try {
-        const { Pname, Pprice, Cat, Pstatus } = req.body
+        const { Pname, productPrice, Cat, Pstatus } = req.body
         const productId = req.params.abc
 
         await productCollection.findByIdAndUpdate(productId, {
             productName: Pname,
-            productPrice: Pprice,
+            productPrice: productPrice,
             productCategory: Cat,
             productStatus: Pstatus,
         });

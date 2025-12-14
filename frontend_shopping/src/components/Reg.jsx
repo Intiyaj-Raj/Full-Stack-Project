@@ -3,40 +3,52 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast'
 
-const Reg = () => {
+const Login = () => {
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(true)
 
-    const [form, setForm] = useState({ fname: "", email: "", pass: "" })
+    const [login, setLogin] = useState({ loginEmail: "", loginPass: "" })
+
 
     async function handleForm(e) {
         e.preventDefault()
+        // console.log(login)
+
         try {
-            const response = await fetch('/api/regdata', {
+            const response = await fetch("/api/loginuser", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form)
+                body: JSON.stringify(login)
             })
-            const result = await response.json()
+            const result = await response.json();
+
+
             if (response.ok) {
-                toast.success(result.message)
-                navigate("/login")
+                if (result.data && result.data.userEmail === "admin@gmail.com") {
+                    navigate("/admin/dashboard")
+                    toast.success("Hello Admin.👤")
+                }
+                else {
+                    toast.success(result.message)
+                    localStorage.setItem("token", result.token)
+                    localStorage.setItem("user", result.data._id)
+                    navigate("/") // successfuly login then go to homepage
+                }
+
             }
+
             else {
                 toast.error(result.message)
             }
-            // console.log(result)
         } catch (error) {
-            toast.error(error)
+            toast.error("Something went wrong!")
         }
     }
 
-    // get input value and upadate value
     function handleChange(e) {
-
-        setForm({ ...form, [e.target.name]: e.target.value })
+        setLogin({ ...login, [e.target.name]: e.target.value })
     }
 
     return (
@@ -45,19 +57,15 @@ const Reg = () => {
                 <button onClick={() => { navigate("/") }} className='absolute top-3 right-3 text-gray-700 hover:text-red-700 text-xl'>
                     <IoIosCloseCircle />
                 </button>
-                <h2 className='text-2xl font-bold mb-4  text-purple-500 text-center'> Create Your Account ... 🫱🫲</h2>
+                <h2 className='text-2xl font-bold mb-4  text-purple-500 text-center'>Login to Continue ..😍</h2>
 
                 <form action="" onSubmit={handleForm}>
-
-                    <label className='block text-sm text-gray-700 mb-2' htmlFor="">Full Name</label>
-                    <input type="text" name="fname" id="" placeholder="Enter your name ..." value={form.fname} onChange={handleChange} className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' />
-
                     <label className='block text-sm text-gray-700 mb-2' htmlFor="">Email</label>
-                    <input type="text" name="email" id="" placeholder="Enter your email ..." value={form.email} onChange={handleChange} className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' />
+                    <input type="text" name="loginEmail" value={login.loginEmail} placeholder="Enter your email ..." className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' onChange={handleChange} />
 
                     <label htmlFor="" className='block text-sm text-gray-700 mb-2'>Password</label>
                     <div className='relative'>
-                        <input type={showPassword ? "password" : "text"} name="pass" id="" placeholder="Enter your password ..." value={form.pass} onChange={handleChange} className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' />
+                        <input type={showPassword ? "password" : "text"} name="loginPass" value={login.loginPass} placeholder="Enter your password ..." className='w-full border border-gray-500  rounded-tl-md rounded-br-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600' onChange={handleChange} />
 
                         <button
                             type='button' onClick={() => { setShowPassword(!showPassword) }}
@@ -65,12 +73,12 @@ const Reg = () => {
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                     </div>
-                    <button className='w-full bg-purple-500 hover:bg-purple-700 text-white py-2 mt-6 font-semibold rounded-tl-md rounded-br-md'>Register</button>
+                    <button className='w-full bg-purple-500 hover:bg-purple-700 text-white py-2 mt-6 font-semibold rounded-tl-md rounded-br-md'>Login</button>
                 </form>
 
-                <p className='text-sm text-center text-gray-600 mt-5'>Already have an account
+                <p className='text-sm text-center text-gray-600 mt-5'>Don't have an account
 
-                    <Link to={"/login"} className='text-green-600 font-medium hover:underline text-sm'> Login</Link>
+                    <Link to={"/reg"} className='text-green-600 font-medium hover:underline text-sm'> Register</Link>
                 </p>
 
             </div>
@@ -78,4 +86,4 @@ const Reg = () => {
     )
 }
 
-export default Reg
+export default Login
