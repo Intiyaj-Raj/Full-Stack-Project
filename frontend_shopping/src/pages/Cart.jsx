@@ -5,7 +5,7 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import { MdDeleteSweep } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
-import { cartTotal, DecrementQunatity, deleteCartItem, fetchCart, IncrementQuantity, saveCart } from '../features/Cart/CartSlice';
+import { cartTotal, DecrementQunatity, deleteCartItem, fetchCart, IncrementQuantity, saveCart, clearCart } from '../features/Cart/CartSlice';
 import { useState } from 'react';
 const Cart = () => {
 
@@ -14,6 +14,12 @@ const Cart = () => {
     const cartAllTotal = useSelector((state) => state.Cart)
     const dispatch = useDispatch();
     const [checkingAuth, setCheckingAuth] = useState(true)
+    const [showCheckoutForm, setShowCheckoutForm] = useState(false)
+    const [userDetails, setUserDetails] = useState({
+        name: '',
+        phone: '',
+        address: ''
+    })
 
 
     useEffect(() => {
@@ -25,7 +31,7 @@ const Cart = () => {
         const userId = localStorage.getItem("user")
         let token = localStorage.getItem("token")
 
-        if (token && userId && cartData.length > 0) {
+        if (token && userId) {
             dispatch(saveCart({
                 userId: userId,
                 cartItems: cartData,
@@ -62,6 +68,20 @@ const Cart = () => {
 
             </div>
         )
+    }
+
+    function handleCheckoutClick() {
+        setShowCheckoutForm(true)
+    }
+
+    function handleFormSubmit(e) {
+        e.preventDefault()
+        if (!userDetails.name || !userDetails.phone || !userDetails.address) {
+            toast.error("Please fill all fields")
+            return
+        }
+        setShowCheckoutForm(false)
+        handlePayment()
     }
 
     function handlePayment() {
@@ -110,6 +130,7 @@ const Cart = () => {
                     }).then((result) => {
                         if (result.success) {
                             toast.success(result.message)
+                            dispatch(clearCart())
                         }
                         else {
                             toast.error(result.message)
@@ -117,9 +138,9 @@ const Cart = () => {
                     })
                 },
                 prefill: {
-                    name: "Intiyaj",
-                    email: "intiyajraj786@gmail.com", // user email 
-                    contact: "123435534"
+                    name: userDetails.name,
+                    email: "user@example.com", // You can get from user data
+                    contact: userDetails.phone
                 }
             }
             const paymentObject = window.Razorpay(options)
@@ -168,10 +189,54 @@ const Cart = () => {
                     <p className='text-lg font-semibold text-gray-600'>Total Products Quantity:- <span className='text-gray-700'>{cartAllTotal.TotalQuantity}</span></p>
 
                     <p className='text-lg font-semibold text-gray-700'>Total Price:- <span className='text-green-500'>₹ {cartAllTotal.TotalPrice}</span></p>
-                    <button className='mt-4 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-800' onClick={handlePayment}>Checkout</button>
+                    <button className='mt-4 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-800' onClick={handleCheckoutClick}>Checkout</button>
                 </div>
 
             </div>
+
+            {showCheckoutForm && (
+                <div className='fixed inset-0 bg-black bg-opacity-45 backdrop-blur-sm flex justify-center items-center z-50'>
+                    <div className='bg-white w-full max-w-md p-6 rounded-xl shadow-md relative mx-4'>
+                        <button onClick={() => setShowCheckoutForm(false)} className='absolute top-3 right-3 text-xl text-gray-700 hover:text-red-600'>
+                            <IoIosCloseCircle />
+                        </button>
+                        <h2 className='text-2xl font-bold text-purple-600 text-center mb-4'>Enter Details</h2>
+                        <form onSubmit={handleFormSubmit} className='space-y-4'>
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700'>Name</label>
+                                <input
+                                    type='text'
+                                    value={userDetails.name}
+                                    onChange={(e) => setUserDetails({ ...userDetails, name: e.target.value })}
+                                    className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700'>Phone Number</label>
+                                <input
+                                    type='tel'
+                                    value={userDetails.phone}
+                                    onChange={(e) => setUserDetails({ ...userDetails, phone: e.target.value })}
+                                    className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700'>Address</label>
+                                <textarea
+                                    value={userDetails.address}
+                                    onChange={(e) => setUserDetails({ ...userDetails, address: e.target.value })}
+                                    className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+                                    rows='3'
+                                    required
+                                />
+                            </div>
+                            <button type='submit' className='w-full bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-800'>Proceed to Payment</button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
 
     )
