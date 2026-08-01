@@ -15,11 +15,15 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/loginuser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(login),
-      });
+      // const response = await fetch("/api/loginuser", {
+      const response = await fetch(
+        "https://full-stack-project-cw6d.onrender.com/api/loginuser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(login),
+        },
+      );
       const result = await response.json();
 
       if (response.ok) {

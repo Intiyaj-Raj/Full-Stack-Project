@@ -1,106 +1,159 @@
-import React from 'react'
-import Slidebar from './Slidebar'
-import { useNavigate, useParams } from 'react-router-dom'
+import React from "react";
+import Slidebar from "./Slidebar";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { toast } from 'react-hot-toast'
+import { toast } from "react-hot-toast";
 const EditProducts = () => {
-    const { id } = useParams()
-    const navigate = useNavigate()
-    const [edit, setEdit] = useState({});
-    async function editValueData() {
-        try {
-            const response = await fetch(`/api/editvaluedata/${id}`)
-            const result = await response.json()
-            if (response.ok) {
-                setEdit(result.data)
-            }
-            else {
-                toast.error(result.message)
-            }
-        } catch (error) {
-            toast.error("Something went wrong!")
-        }
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [edit, setEdit] = useState({});
+  async function editValueData() {
+    try {
+      // const response = await fetch(`/api/editvaluedata/${id}`)
+      const response = await fetch(
+        `https://full-stack-project-cw6d.onrender.com/api/editvaluedata/${id}`,
+      );
+      const result = await response.json();
+      if (response.ok) {
+        setEdit(result.data);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
     }
-    useEffect(() => {
-        editValueData();
-    }, []);
+  }
+  useEffect(() => {
+    editValueData();
+  }, []);
 
+  function handleChange(e) {
+    setEdit({ ...edit, [e.target.name]: e.target.value });
+  }
 
-    function handleChange(e) {
-        setEdit({ ...edit, [e.target.name]: e.target.value });
+  async function handleForm(e) {
+    e.preventDefault();
+
+    try {
+      const formData = {
+        Pname: edit.productName,
+        Pprice: edit.productPrice,
+        Cat: edit.productCategory,
+        Pstatus: edit.productStatus,
+      };
+
+      //   const response = await fetch(`/api/productupdate/${id}`, {
+      const response = await fetch(
+        `https://full-stack-project-cw6d.onrender.com/api/productupdate/${id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
+      const record = await response.json();
+      console.log(record);
+
+      if (response.ok) {
+        toast.success(record.message);
+        navigate("/admin/adminproduct");
+      } else {
+        toast.error(record.message);
+      }
+    } catch (error) {
+      toast.error(error);
     }
+  }
 
-    async function handleForm(e) {
-        e.preventDefault()
+  return (
+    <div className="flex mt-16">
+      <Slidebar />
+      <div className="flex-1 p-10 min-h-screen">
+        <h1 className="text-3xl font-bold mb-6 text-gray-700">
+          Update Product 🛍️
+        </h1>
+        <button
+          onClick={() => {
+            navigate("/admin/adminproduct");
+          }}
+          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Back
+        </button>
 
-        try {
-            const formData = {
-                Pname: edit.productName,
-                Pprice: edit.productPrice,
-                Cat: edit.productCategory,
-                Pstatus: edit.productStatus
-            }
+        <form
+          action=""
+          onSubmit={handleForm}
+          className="bg-white shadow-slate-500 shadow-md rounded-xl p-6 max-w-3xl mx-auto space-y-6 mt-5"
+        >
+          <label htmlFor="" className="block text-gray-700 font-medium">
+            Product Name
+          </label>
+          <input
+            type="text"
+            name="productName"
+            id=""
+            value={edit.productName}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
 
-            const response = await fetch(`/api/productupdate/${id}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            })
-            const record = await response.json()
-            console.log(record)
+          <label htmlFor="" className="block text-gray-700 font-medium">
+            Price ₹
+          </label>
+          <input
+            type="number"
+            name="productPrice"
+            id=""
+            value={edit.productPrice}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
 
-            if (response.ok) {
-                toast.success(record.message);
-                navigate("/admin/adminproduct")
-            }
-            else {
-                toast.error(record.message)
-            }
-        } catch (error) {
-            toast.error(error)
-        }
-    }
+          <label htmlFor="" className="block text-gray-700 font-medium">
+            Categories
+          </label>
+          <select
+            name="productCategory"
+            id=""
+            value={edit.productCategory}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
+          >
+            <option value="">---Select---</option>
+            <option value="cafe">Cafe</option>
+            <option value="home">Home</option>
+            <option value="toys">Toys</option>
+            <option value="freash">Freash</option>
+            <option value="electronics">Electronics</option>
+            <option value="mobile">Mobile</option>
+            <option value="beauty">Beauty</option>
+          </select>
 
-    return (
-        <div className='flex mt-16'>
-            <Slidebar />
-            <div className='flex-1 p-10 min-h-screen'>
-                <h1 className='text-3xl font-bold mb-6 text-gray-700'>Update Product 🛍️</h1>
-                <button onClick={() => { navigate("/admin/adminproduct") }} className='bg-gray-300 px-4 py-2 rounded hover:bg-gray-400'>Back</button>
+          <label htmlFor="" className="block text-gray-700 font-medium">
+            Status
+          </label>
+          <select
+            name="productStatus"
+            id=""
+            value={edit.productStatus}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
+          >
+            <option value="">---Select---</option>
+            <option value="In-Stock">In-Stock</option>
+            <option value="Out-Of-Stock">Out-Of-Stock</option>
+          </select>
 
-                <form action="" onSubmit={handleForm} className='bg-white shadow-slate-500 shadow-md rounded-xl p-6 max-w-3xl mx-auto space-y-6 mt-5'>
-                    <label htmlFor="" className='block text-gray-700 font-medium'>Product Name</label>
-                    <input type="text" name="productName" id="" value={edit.productName} onChange={handleChange} className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' />
+          <div className="text-right">
+            <button className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
-                    <label htmlFor="" className='block text-gray-700 font-medium'>Price ₹</label>
-                    <input type="number" name="productPrice" id="" value={edit.productPrice} onChange={handleChange} className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' />
-
-                    <label htmlFor="" className='block text-gray-700 font-medium'>Categories</label>
-                    <select name="productCategory" id="" value={edit.productCategory} onChange={handleChange} className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' >
-                        <option value="">---Select---</option>
-                        <option value="cafe">Cafe</option>
-                        <option value="home">Home</option>
-                        <option value="toys">Toys</option>
-                        <option value="freash">Freash</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="mobile">Mobile</option>
-                        <option value="beauty">Beauty</option>
-                    </select>
-
-                    <label htmlFor="" className='block text-gray-700 font-medium'>Status</label>
-                    <select name="productStatus" id="" value={edit.productStatus} onChange={handleChange} className='w-full px-4 py-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-green-600' >
-                        <option value="">---Select---</option>
-                        <option value="In-Stock">In-Stock</option>
-                        <option value="Out-Of-Stock">Out-Of-Stock</option>
-                    </select>
-
-                    <div className='text-right'>
-                        <button className='bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700'>Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    )
-}
-
-export default EditProducts
+export default EditProducts;

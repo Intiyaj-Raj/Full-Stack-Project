@@ -4,7 +4,8 @@ export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
 
     const token = localStorage.getItem("token")
 
-    const response = await fetch("/api/cart/save", {
+    // const response = await fetch("/api/cart/save", {
+    const response = await fetch("https://full-stack-project-cw6d.onrender.com/api/cart/save", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -18,7 +19,8 @@ export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
 
 export const fetchCart = createAsyncThunk("cart/fetch", async (userId) => {
     let token = localStorage.getItem("token")
-    const response = await fetch(`/api/cart/${userId}`, {
+    // const response = await fetch(`/api/cart/${userId}`, {
+    const response = await fetch(`https://full-stack-project-cw6d.onrender.com/api/cart/${userId}`, {
 
 
         method: "GET",
