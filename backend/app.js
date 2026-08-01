@@ -6,7 +6,11 @@ dotenv.config()
 const apiRoute = require("./router/api")
 const connectDB = require("./config/db")
 const cors = require("cors")
-
+const dns = require("dns");
+dns.setServers([
+    '1.1.1.1',
+    '8.8.8.8'
+])
 connectDB()
 // express.json() use to allow json data  ... 
 

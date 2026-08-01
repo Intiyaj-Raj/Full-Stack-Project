@@ -29,7 +29,6 @@ const App = () => {
           <Route path='/reg' element={<Reg />} />
           <Route path='/cart' element={<Cart />} />
 
-
           {/* for admin */}
 
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
