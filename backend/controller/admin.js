@@ -6,7 +6,8 @@ const nodemailer = require("nodemailer")
 const addadminproductController = async (req, res) => {
 
     try {
-        const PImage = req.file.filename
+        // const PImage = req.file.filename
+        const PImage = req.file.path
         const { Pname, Price, Cat } = req.body
         if (!Pname || !Price || !Cat) {
             return res.status(400).json({ message: "All fields are required." })
