@@ -39,10 +39,7 @@ const AddProducts = () => {
         toast.error(record.message);
       }
     } catch (error) {
-<<<<<<< HEAD
       // toast.error(record.message);
-=======
->>>>>>> 5399e9f601442223d7d248066f644a959a8482cf
       toast.error(error.message);
     }
   }
