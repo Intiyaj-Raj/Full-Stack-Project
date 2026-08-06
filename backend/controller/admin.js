@@ -7,6 +7,7 @@ const addadminproductController = async (req, res) => {
 
     try {
         // const PImage = req.file.filename
+<<<<<<< HEAD
         console.log(req.file);
         console.log(req.body);
 
@@ -15,6 +16,9 @@ const addadminproductController = async (req, res) => {
         }
 
         const PImage = req.file.filename;
+=======
+        const PImage = req.file.path
+>>>>>>> 5399e9f601442223d7d248066f644a959a8482cf
         const { Pname, Price, Cat } = req.body
         if (!Pname || !Price || !Cat) {
             return res.status(400).json({ message: "All fields are required." })
