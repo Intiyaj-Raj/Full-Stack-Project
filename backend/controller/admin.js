@@ -6,7 +6,15 @@ const nodemailer = require("nodemailer")
 const addadminproductController = async (req, res) => {
 
     try {
-        const PImage = req.file.filename
+        // const PImage = req.file.filename
+        console.log(req.file);
+        console.log(req.body);
+
+        if (!req.file) {
+            return res.status(400).json({ message: "Image not received." });
+        }
+
+        const PImage = req.file.filename;
         const { Pname, Price, Cat } = req.body
         if (!Pname || !Price || !Cat) {
             return res.status(400).json({ message: "All fields are required." })
@@ -120,13 +128,13 @@ const mailReplyController = async (req, res) => {
             port: 587,
             secure: false,
             auth: {
-                user: "intiyajraj786@gmail.com",
-                pass: "drwh ckgz xkyn ggkb",
+                user: process.env.ADMIN_EMAIL,
+                pass: process.env.APP_PASSWORD,
             },
         });
 
         const info = await transporter.sendMail({
-            from: '"ShopBag" <intiyajraj786@gmail.com>',
+            from: `"ShopBag" <${process.env.ADMIN_EMAIL}>`,
             to: to,
             subject: sub,
             text: body,
@@ -140,7 +148,12 @@ const mailReplyController = async (req, res) => {
 
     } catch (error) {
 
-        res.status(500).json({ message: "Internal server error." })
+        // res.status(500).json({ message: "Internal server error." })
+        console.log(error);
+
+        res.status(500).json({
+            message: error.message,
+        });
     }
 
 }

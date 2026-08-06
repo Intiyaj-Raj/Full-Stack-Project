@@ -39,7 +39,8 @@ const AddProducts = () => {
         toast.error(record.message);
       }
     } catch (error) {
-      toast.error(record.message);
+      // toast.error(record.message);
+      toast.error(error.message);
     }
   }
 

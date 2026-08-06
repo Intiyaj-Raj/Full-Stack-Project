@@ -44,7 +44,7 @@ const Product = () => {
             className="bg-green-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition border-2 border-gray-300"
           >
             <img
-              src={`https://full-stack-project-cw6d.onrender.com/uploads/${item.productImage}`}
+              src={item.productImage}
               alt=""
               className="w-full h-32 object-contain rounded"
             />

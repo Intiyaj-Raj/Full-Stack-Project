@@ -23,14 +23,18 @@ const QueryReply = () => {
       const result = await response.json();
       if (response.ok) {
         console.log(result);
-        setQuery({
-          to: result.data.Email,
-        });
+        // setQuery({
+        //   to: result.data.Email,
+        // });
+        setQuery((prev) => ({
+          ...prev,
+          to: result.data.Email || "",
+        }));
       } else {
         toast.error(result.message);
       }
     } catch (error) {
-      toast.error(result.message);
+      toast.error(error.message);
     }
   }
   useEffect(() => {
@@ -61,7 +65,7 @@ const QueryReply = () => {
         toast.error(result.message);
       }
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
   }
 
@@ -94,6 +98,7 @@ const QueryReply = () => {
               type="text"
               name="to"
               value={query.to}
+              readOnly
               id=""
               className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
@@ -105,6 +110,7 @@ const QueryReply = () => {
               type="text"
               name=""
               value={"intiyajraj786@gmail.com"}
+              readOnly
               id=""
               className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
             />

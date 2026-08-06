@@ -22,7 +22,7 @@ const AdminQuery = () => {
         toast.error(result.message);
       }
     } catch (error) {
-      toast.error(result.message);
+      toast.error(error.message);
     }
   }
   useEffect(() => {
@@ -48,7 +48,7 @@ const AdminQuery = () => {
         toast.error(result.message);
       }
     } catch (error) {
-      toast.error(result.message);
+      toast.error(error.message);
     }
   }
 
@@ -61,7 +61,7 @@ const AdminQuery = () => {
         </h1>
 
         <div>
-          <table className="w-full text-sm text-left text-gray-700 dark:text-gray-400">
+          {/* <table className="w-full text-sm text-left text-gray-700 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 text-center">
               <tr>
                 <th className="px-6 py-2">S.No</th>
@@ -111,6 +111,62 @@ const AdminQuery = () => {
                 </tbody>
               ))
             )}
+          </table> */}
+          <table className="w-full text-sm text-left text-gray-700 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 text-center">
+              <tr>
+                <th className="px-6 py-2">S.No</th>
+                <th className="px-6 py-2">User Name</th>
+                <th className="px-6 py-2">Query</th>
+                <th className="px-6 py-2">Email-Id</th>
+                <th className="px-6 py-2">Status</th>
+                <th className="px-6 py-2">Action-1</th>
+                <th className="px-6 py-2">Action-2</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {query.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="text-center text-red-600 font-bold py-4"
+                  >
+                    No Queries Found...
+                  </td>
+                </tr>
+              ) : (
+                query.map((item, index) => (
+                  <tr
+                    key={item._id}
+                    className="bg-white border-b border-gray-300 text-gray-800"
+                  >
+                    <td className="px-6 py-2">{index + 1}</td>
+                    <td className="px-6 py-2">{item.Name}</td>
+                    <td className="px-6 py-2">{item.Query}</td>
+                    <td className="px-6 py-2">{item.Email}</td>
+                    <td className="px-6 py-2">{item.queryStatus}</td>
+
+                    <td className="px-6 py-2">
+                      <Link to={`/admin/queryreply/${item._id}`}>
+                        <button className="text-xs bg-green-500 hover:bg-green-600 text-white rounded px-3 py-1">
+                          Reply
+                        </button>
+                      </Link>
+                    </td>
+
+                    <td className="px-6 py-2">
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="text-xs bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
           </table>
         </div>
       </div>
