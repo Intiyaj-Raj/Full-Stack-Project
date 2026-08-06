@@ -112,44 +112,98 @@ const querySingleDataController = async (req, res) => {
     }
 }
 
+// const mailReplyController = async (req, res) => {
+//     const { to, sub, body } = req.body
+//     const queryId = req.params.abc
+//     try {
+//         const transporter = nodemailer.createTransport({
+//             host: "smtp.gmail.com",
+//             port: 587,
+//             secure: false,
+//             auth: {
+//                 user: process.env.ADMIN_EMAIL,
+//                 pass: process.env.APP_PASSWORD,
+//             },
+//         });
+
+//         const info = await transporter.sendMail({
+//             from: `"ShopBag" <${process.env.ADMIN_EMAIL}>`,
+//             to: to,
+//             subject: sub,
+//             text: body,
+//             html: body,
+//         });
+
+//         await queryCollecion.findByIdAndUpdate(queryId, {
+//             queryStatus: "Read"
+//         })
+//         res.status(200).json({ message: "Successfully Reply." })
+
+//     } catch (error) {
+
+//         // res.status(500).json({ message: "Internal server error." })
+//         console.log(error);
+
+//         res.status(500).json({
+//             message: error.message,
+//         });
+//     }
+
+// }
+
 const mailReplyController = async (req, res) => {
-    const { to, sub, body } = req.body
-    const queryId = req.params.abc
+    console.log("Mail API Called");
+
+    const { to, sub, body } = req.body;
+    const queryId = req.params.abc;
+
     try {
+        console.log("Creating transporter");
+
         const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 587,
+            host: "smtp-relay.brevo.com",
+            port: 2525,
             secure: false,
             auth: {
-                user: process.env.ADMIN_EMAIL,
-                pass: process.env.APP_PASSWORD,
+                user: process.env.BREVO_EMAIL,
+                pass: process.env.BREVO_SMTP_KEY
             },
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000
         });
+        console.log("Verifying transporter...");
+        await transporter.verify();
+        console.log("Transport verified");
+
+        console.log("Sending mail...");
 
         const info = await transporter.sendMail({
-            from: `"ShopBag" <${process.env.ADMIN_EMAIL}>`,
-            to: to,
+            from: `"ShopBag" <${process.env.BREVO_SENDER_EMAIL}>`,
+            to,
             subject: sub,
             text: body,
             html: body,
         });
 
+        console.log("Mail Sent:", info.messageId);
+
         await queryCollecion.findByIdAndUpdate(queryId, {
-            queryStatus: "Read"
-        })
-        res.status(200).json({ message: "Successfully Reply." })
+            queryStatus: "Read",
+        });
+
+        res.status(200).json({
+            message: "Successfully Reply.",
+        });
 
     } catch (error) {
-
-        // res.status(500).json({ message: "Internal server error." })
         console.log(error);
 
         res.status(500).json({
             message: error.message,
         });
     }
-
-}
+};
 module.exports = {
     addadminproductController,
     getAllProductController,
