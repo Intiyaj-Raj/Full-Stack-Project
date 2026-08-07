@@ -178,7 +178,7 @@ const Cart = () => {
             <li className="flex items-center gap-5 py-4">
               <img
                 // src={`/uploads/${value.productImage}`}
-                src={`https://full-stack-project-cw6d.onrender.com/uploads/${value.productImage}`}
+                src={value.productImage}
                 alt=""
                 className="w-14 h-14 object-cover rounded border-2 border-gray-300"
               />

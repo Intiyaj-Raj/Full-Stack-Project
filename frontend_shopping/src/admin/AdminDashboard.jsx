@@ -15,7 +15,7 @@ const AdminDashboard = () => {
       const result = await response.json();
 
       if (response.ok) {
-        console.log(result);
+        // console.log(result);
         setProducts(result.data);
       } else {
         toast.error(result.message);

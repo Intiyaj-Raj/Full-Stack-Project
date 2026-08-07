@@ -73,7 +73,7 @@ const AdminProducts = () => {
               className="bg-white rounded-xl shadow-md p-4 hover:shadow-xl border border-gray-300"
             >
               <img
-                src={`https://full-stack-project-cw6d.onrender.com/uploads/${item.productImage}`}
+                src={item.productImage}
                 alt=""
                 className="w-full h-32 object-contain rounded-md mb-4 border border-gray-300"
               />

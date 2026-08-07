@@ -22,7 +22,6 @@ export const fetchCart = createAsyncThunk("cart/fetch", async (userId) => {
     // const response = await fetch(`/api/cart/${userId}`, {
     const response = await fetch(`https://full-stack-project-cw6d.onrender.com/api/cart/${userId}`, {
 
-
         method: "GET",
         headers: {
             "Content-Type": "application/json",
