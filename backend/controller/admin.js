@@ -161,19 +161,18 @@ const mailReplyController = async (req, res) => {
         console.log("Creating transporter");
 
         const transporter = nodemailer.createTransport({
-
             host: "smtp-relay.brevo.com",
             port: 2525,
             secure: false,
             auth: {
-                user: process.env.BREVO_EMAIL,
-                pass: process.env.BREVO_SMTP_KEY
+                user: process.env.BREVO_EMAIL?.trim(),
+                pass: process.env.BREVO_SMTP_KEY?.trim()
             },
-
             connectionTimeout: 10000,
             greetingTimeout: 10000,
             socketTimeout: 10000
         });
+
         console.log("BREVO_EMAIL set:", !!process.env.BREVO_EMAIL, process.env.BREVO_EMAIL);
         console.log("BREVO_SMTP_KEY set:", !!process.env.BREVO_SMTP_KEY, process.env.BREVO_SMTP_KEY?.length);
         console.log("Verifying transporter...");
