@@ -152,13 +152,11 @@ const querySingleDataController = async (req, res) => {
 // }
 
 const mailReplyController = async (req, res) => {
-    console.log("Mail API Called");
 
     const { to, sub, body } = req.body;
     const queryId = req.params.abc;
 
     try {
-        console.log("Creating transporter");
 
         const transporter = nodemailer.createTransport({
             host: "smtp-relay.brevo.com",
@@ -173,14 +171,8 @@ const mailReplyController = async (req, res) => {
             socketTimeout: 10000
         });
 
-        console.log("BREVO_EMAIL set:", !!process.env.BREVO_EMAIL, process.env.BREVO_EMAIL);
-        console.log("BREVO_SMTP_KEY set:", !!process.env.BREVO_SMTP_KEY, process.env.BREVO_SMTP_KEY?.length);
-        console.log("Verifying transporter...");
-        await transporter.verify();
-        console.log("Transport verified");
 
-        console.log("Sending mail...");
-
+        await transporter.verify()
         const info = await transporter.sendMail({
             from: `"ShopBag" <${process.env.BREVO_SENDER_EMAIL}>`,
             to,
@@ -188,9 +180,6 @@ const mailReplyController = async (req, res) => {
             text: body,
             html: body,
         });
-
-        console.log("Mail Sent:", info.messageId);
-
         await queryCollecion.findByIdAndUpdate(queryId, {
             queryStatus: "Read",
         });
@@ -200,8 +189,6 @@ const mailReplyController = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
-
         res.status(500).json({
             message: error.message,
         });
