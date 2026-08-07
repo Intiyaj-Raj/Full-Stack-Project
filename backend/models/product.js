@@ -8,6 +8,7 @@ const productSchema = new Schema({
     productPrice: { type: Number, require: true },
     productCategory: { type: String, require: true },
     productStatus: { type: String, default: "Out-Of-Stock" },
+    // productStatus: { type: String, default: "In-Stock" },
     productImage: { type: String, require: true }
 })
 
