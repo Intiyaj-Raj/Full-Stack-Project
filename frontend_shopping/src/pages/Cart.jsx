@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -6,23 +6,18 @@ import { MdDeleteSweep } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import {
-  cartTotal,
   DecrementQunatity,
   deleteCartItem,
-  fetchCart,
   IncrementQuantity,
-  saveCart,
   clearCart,
 } from "../features/Cart/CartSlice";
+import { useState } from "react";
 
 const Cart = () => {
   const navigate = useNavigate();
   const cartData = useSelector((state) => state.Cart.cart);
   const cartAllTotal = useSelector((state) => state.Cart);
   const dispatch = useDispatch();
-
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const [cartLoaded, setCartLoaded] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   const [userDetails, setUserDetails] = useState({
     name: "",
@@ -30,58 +25,17 @@ const Cart = () => {
     address: "",
   });
 
-  // 1. Auth check + initial fetch from server — runs once on mount
+  // Fetching and saving the cart now happens once, at the App level
+  // (see App.jsx), so it works no matter which page an item was added
+  // from and never clobbers a freshly-added item with stale server data.
+  // This page only needs to redirect unauthenticated visitors.
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       toast.error("Please login to access your cart");
       navigate("/login");
-      return;
     }
-
-    dispatch(fetchCart()).finally(() => {
-      setCartLoaded(true);
-      setCheckingAuth(false);
-    });
-  }, [dispatch, navigate]);
-
-  // 2. Recompute totals whenever the cart items change
-  useEffect(() => {
-    dispatch(cartTotal());
-  }, [cartData, dispatch]);
-
-  // 3. Save to server — only after the initial fetch has completed, and
-  //    debounced so rapid-fire changes collapse into one request with the
-  //    final, consistent totals (fixes the "empty cart overwrites saved cart" bug)
-  useEffect(() => {
-    if (!cartLoaded) return; // never save before we've loaded the real server state
-
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    const timeoutId = setTimeout(() => {
-      dispatch(
-        saveCart({
-          cartItems: cartData,
-          totalPrice: cartAllTotal.TotalPrice,
-          totalQuantity: cartAllTotal.TotalQuantity,
-        }),
-      );
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [cartData, cartAllTotal, cartLoaded, dispatch]);
-
-  if (checkingAuth) {
-    return (
-      <div className="fixed inset-0 flex justify-center bg-black bg-opacity-40">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          Loading Cart....
-        </div>
-      </div>
-    );
-  }
+  }, [navigate]);
 
   function handleCheckoutClick() {
     setShowCheckoutForm(true);
