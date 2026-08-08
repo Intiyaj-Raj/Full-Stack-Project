@@ -178,7 +178,12 @@ const userQueryController = async (req, res) => {
 const saveCartDataController = async (req, res) => {
     try {
         const { userId, cartItems, totalPrice, totalQuantity } = req.body
-
+        console.log("Save Cart Request:", {
+            userId,
+            cartItems,
+            totalPrice,
+            totalQuantity
+        });
         let cart = await cartCollection.findOne({ userId })
 
         if (cart) {
@@ -199,9 +204,13 @@ const saveCartDataController = async (req, res) => {
 
         res.status(200).json({ message: "Cart Save Successfully" })
     } catch (error) {
+
         res.status(500).json({ message: "Internal Server Error" })
     }
 };
+
+
+
 
 const getCartController = async (req, res) => {
     try {
@@ -222,9 +231,11 @@ const searchController = async (req, res) => {
         })
 
         res.status(200).json({ data: result })
-    } catch (error) {
+    }
+    catch (error) {
         res.status(500).json({ message: "Internal server error." })
     }
+
 };
 
 module.exports = {

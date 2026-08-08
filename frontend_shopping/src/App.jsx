@@ -13,6 +13,7 @@ import AddProducts from "./admin/AddProducts";
 import EditProducts from "./admin/EditProducts";
 import AdminQuery from "./admin/AdminQuery";
 import QueryReply from "./admin/QueryReply";
+import ForgotPass from "./components/ForgotPass";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/reg" element={<Reg />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/forgotPassword" element={<ForgotPass />} />
 
           {/* for admin */}
 

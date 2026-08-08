@@ -74,7 +74,7 @@ const SearchData = ({ onClose }) => {
             >
               <div>
                 <img
-                  src={`https://full-stack-project-cw6d.onrender.com/uploads/${item.productImage}`}
+                  src={item.productImage}
                   alt={item.productName}
                   className="w-full h-32 object-contain rounded"
                 />

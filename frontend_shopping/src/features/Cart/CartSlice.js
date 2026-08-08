@@ -15,12 +15,54 @@ export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
     })
 
     return await response.json()
+
 })
+// export const saveCart = createAsyncThunk(
+//     "cart/save",
+//     async (cartData, { rejectWithValue }) => {
+//         try {
+//             const token = localStorage.getItem("token");
+
+//             console.log("📦 Cart data being sent:", cartData);
+//             console.log("🔑 Token exists:", !!token);
+
+//             const response = await fetch(
+//                 "https://full-stack-project-cw6d.onrender.com/api/cart/save",
+//                 {
+//                     method: "POST",
+//                     headers: {
+//                         "Content-Type": "application/json",
+//                         Authorization: `Bearer ${token}`,
+//                     },
+//                     body: JSON.stringify(cartData),
+//                 }
+//             );
+
+//             const data = await response.json();
+
+//             console.log("📡 Save cart status:", response.status);
+//             console.log("📡 Save cart response:", data);
+
+//             if (!response.ok) {
+//                 return rejectWithValue(data);
+//             }
+
+//             return data;
+
+//         } catch (error) {
+//             console.error("❌ Save cart fetch error:", error);
+//             return rejectWithValue({
+//                 message: error.message
+//             });
+//         }
+//     }
+// );
 
 export const fetchCart = createAsyncThunk("cart/fetch", async (userId) => {
     let token = localStorage.getItem("token")
     // const response = await fetch(`/api/cart/${userId}`, {
-    const response = await fetch(`https://full-stack-project-cw6d.onrender.com/api/cart/${userId}`, {
+    // const response = await fetch(`https://full-stack-project-cw6d.onrender.com/api/cart${userId}`, {
+    const response = await fetch("https://full-stack-project-cw6d.onrender.com/api/cart", {
 
         method: "GET",
         headers: {
@@ -45,7 +87,6 @@ export const cartSlice = createSlice({
             const find = state.cart.findIndex((value) => {
                 return value._id === actions.payload._id
             })
-            // console.log(find);
 
             if (find != -1) {
                 state.cart[find] = ({ ...state.cart[find], quantity: state.cart[find].quantity + 1 })
@@ -97,14 +138,15 @@ export const cartSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(saveCart.fulfilled, (state, actions) => {
-            console.log("Cart Save :- ", actions.payload)
+            // console.log("Cart Save :- ", actions.payload)
 
         });
         builder.addCase(fetchCart.fulfilled, (state, actions) => {
-            console.log("FetchData :- ", actions.payload)
+            // console.log("FetchData :- ", actions.payload)
             state.cart = actions.payload.cartItems || [];
             state.TotalPrice = actions.payload.totalPrice || 0;
-            state.totalQuantity = actions.payload.totalQuantity || 0;
+            // state.totalQuantity = actions.payload.totalQuantity || 0;
+            state.TotalQuantity = actions.payload.totalQuantity || 0;
         })
     }
 })

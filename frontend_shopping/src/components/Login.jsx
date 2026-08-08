@@ -107,6 +107,13 @@ const Login = () => {
         <p className="text-sm text-center text-gray-600 mt-5">
           Don't have an account
           <Link
+            to={"/forgotPassword"}
+            className="text-blue-600 font-medium hover:underline text-sm"
+          >
+            {" "}
+            Forgot Password
+          </Link>
+          <Link
             to={"/reg"}
             className="text-green-600 font-medium hover:underline text-sm"
           >

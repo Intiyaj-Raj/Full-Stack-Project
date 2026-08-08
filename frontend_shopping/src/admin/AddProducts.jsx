@@ -107,7 +107,7 @@ const AddProducts = () => {
             <option value="cafe">Cafe</option>
             <option value="home">Home</option>
             <option value="toys">Toys</option>
-            <option value="fresh">Freash</option>
+            <option value="fresh">Fresh</option>
             <option value="electronics">Electronics</option>
             <option value="mobile">Mobile</option>
             <option value="beauty">Beauty</option>

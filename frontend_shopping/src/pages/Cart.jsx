@@ -37,9 +37,16 @@ const Cart = () => {
     let token = localStorage.getItem("token");
 
     if (token && userId) {
+      // dispatch(
+      //   saveCart({
+      //     userId: userId,
+      //     cartItems: cartData,
+      //     totalPrice: cartAllTotal.TotalPrice,
+      //     totalQuantity: cartAllTotal.TotalQuantity,
+      //   }),
+      // );
       dispatch(
         saveCart({
-          userId: userId,
           cartItems: cartData,
           totalPrice: cartAllTotal.TotalPrice,
           totalQuantity: cartAllTotal.TotalQuantity,

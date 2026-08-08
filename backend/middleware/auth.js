@@ -21,7 +21,7 @@ const auth = (req, res, next) => {
 
 const adminAuth = (req, res, next) => {
     auth(req, res, () => {
-        if (req.user.userEmail !== "admin@gmail.com") {
+        if (req.user.userEmail !== process.env.APP_ADMIN_EMAIL) {
             return res.status(403).json({ message: "Access Denied:- Admin Only" })
         }
         next();
