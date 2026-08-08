@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -14,13 +14,15 @@ import {
   saveCart,
   clearCart,
 } from "../features/Cart/CartSlice";
-import { useState } from "react";
+
 const Cart = () => {
   const navigate = useNavigate();
   const cartData = useSelector((state) => state.Cart.cart);
   const cartAllTotal = useSelector((state) => state.Cart);
   const dispatch = useDispatch();
+
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [cartLoaded, setCartLoaded] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
   const [userDetails, setUserDetails] = useState({
     name: "",
@@ -28,23 +30,37 @@ const Cart = () => {
     address: "",
   });
 
+  // 1. Auth check + initial fetch from server — runs once on mount
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Please login to access your cart");
+      navigate("/login");
+      return;
+    }
+
+    dispatch(fetchCart()).finally(() => {
+      setCartLoaded(true);
+      setCheckingAuth(false);
+    });
+  }, [dispatch, navigate]);
+
+  // 2. Recompute totals whenever the cart items change
   useEffect(() => {
     dispatch(cartTotal());
   }, [cartData, dispatch]);
 
+  // 3. Save to server — only after the initial fetch has completed, and
+  //    debounced so rapid-fire changes collapse into one request with the
+  //    final, consistent totals (fixes the "empty cart overwrites saved cart" bug)
   useEffect(() => {
-    const userId = localStorage.getItem("user");
-    let token = localStorage.getItem("token");
+    if (!cartLoaded) return; // never save before we've loaded the real server state
 
-    if (token && userId) {
-      // dispatch(
-      //   saveCart({
-      //     userId: userId,
-      //     cartItems: cartData,
-      //     totalPrice: cartAllTotal.TotalPrice,
-      //     totalQuantity: cartAllTotal.TotalQuantity,
-      //   }),
-      // );
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const timeoutId = setTimeout(() => {
       dispatch(
         saveCart({
           cartItems: cartData,
@@ -52,25 +68,10 @@ const Cart = () => {
           totalQuantity: cartAllTotal.TotalQuantity,
         }),
       );
-    }
-  }, [cartData, cartAllTotal, dispatch]);
+    }, 500);
 
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    let userId = localStorage.getItem("user");
-
-    if (!token) {
-      toast.error("Please login to access your cart");
-      navigate("/login");
-      return;
-    }
-    if (userId) {
-      dispatch(fetchCart(userId));
-      setCheckingAuth(false);
-    } else {
-      setCheckingAuth(false);
-    }
-  }, [dispatch, navigate]);
+    return () => clearTimeout(timeoutId);
+  }, [cartData, cartAllTotal, cartLoaded, dispatch]);
 
   if (checkingAuth) {
     return (
@@ -101,7 +102,6 @@ const Cart = () => {
     const currency = "INR";
     const receipt = "receipt#1";
 
-    // fetch("/api/create-order", {
     fetch("https://full-stack-project-cw6d.onrender.com/api/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -126,7 +126,6 @@ const Cart = () => {
             let token = localStorage.getItem("token");
             let userID = localStorage.getItem("user");
 
-            // fetch("/api/verify", {
             fetch("https://full-stack-project-cw6d.onrender.com/api/verify", {
               method: "POST",
               headers: {
@@ -184,7 +183,6 @@ const Cart = () => {
           <ul key={index} className="divide-y divide-gray-500">
             <li className="flex items-center gap-5 py-4">
               <img
-                // src={`/uploads/${value.productImage}`}
                 src={value.productImage}
                 alt=""
                 className="w-14 h-14 object-cover rounded border-2 border-gray-300"

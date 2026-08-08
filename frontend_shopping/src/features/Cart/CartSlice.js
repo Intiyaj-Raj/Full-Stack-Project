@@ -1,22 +1,24 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
+// // export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
 
-    const token = localStorage.getItem("token")
+// //     const token = localStorage.getItem("token")
 
-    // const response = await fetch("/api/cart/save", {
-    const response = await fetch("https://full-stack-project-cw6d.onrender.com/api/cart/save", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(cartData)
-    })
+// //     // const response = await fetch("/api/cart/save", {
+// //     const response = await fetch("https://full-stack-project-cw6d.onrender.com/api/cart/save", {
+// //         method: "POST",
+// //         headers: {
+// //             "Content-Type": "application/json",
+// //             Authorization: `Bearer ${token}`,
+// //         },
+// //         body: JSON.stringify(cartData)
+// //     })
 
-    return await response.json()
+// //     return await response.json()
 
-})
+// // })
+
+
 // export const saveCart = createAsyncThunk(
 //     "cart/save",
 //     async (cartData, { rejectWithValue }) => {
@@ -58,20 +60,165 @@ export const saveCart = createAsyncThunk("cart/save", async (cartData) => {
 //     }
 // );
 
-export const fetchCart = createAsyncThunk("cart/fetch", async (userId) => {
-    let token = localStorage.getItem("token")
-    // const response = await fetch(`/api/cart/${userId}`, {
-    // const response = await fetch(`https://full-stack-project-cw6d.onrender.com/api/cart${userId}`, {
-    const response = await fetch("https://full-stack-project-cw6d.onrender.com/api/cart", {
+// export const fetchCart = createAsyncThunk("cart/fetch", async (userId) => {
+//     let token = localStorage.getItem("token")
+//     // const response = await fetch(`/api/cart/${userId}`, {
+//     // const response = await fetch(`https://full-stack-project-cw6d.onrender.com/api/cart${userId}`, {
+//     const response = await fetch("https://full-stack-project-cw6d.onrender.com/api/cart", {
 
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+//         method: "GET",
+//         headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${token}`
+//         }
+//     })
+//     return await response.json()
+// })
+// const initialState = {
+//     cart: [],
+//     TotalPrice: 0,
+//     TotalQuantity: 0,
+// }
+
+// export const cartSlice = createSlice({
+//     name: 'cart',
+//     initialState,
+//     reducers: {
+//         addToCart: (state, actions) => {
+
+//             const find = state.cart.findIndex((value) => {
+//                 return value._id === actions.payload._id
+//             })
+
+//             if (find != -1) {
+//                 state.cart[find] = ({ ...state.cart[find], quantity: state.cart[find].quantity + 1 })
+//             } else {
+//                 state.cart.push({ ...actions.payload, quantity: 1 })
+//             }
+//         },
+//         deleteCartItem: (state, actions) => {
+//             const index = state.cart.findIndex((item) => item._id === actions.payload._id)
+//             if (index !== -1) {
+//                 state.cart.splice(index, 1)
+//             }
+//         },
+//         IncrementQuantity: (state, actions) => {
+//             state.cart = state.cart.map((value) => {
+//                 if (value._id === actions.payload._id) {
+//                     return { ...value, quantity: value.quantity + 1 }
+//                 }
+//                 return value
+//             })
+//         },
+//         DecrementQunatity: (state, actions) => {
+//             state.cart = state.cart.map((value) => {
+//                 if (value._id === actions.payload._id) {
+//                     return { ...value, quantity: value.quantity > 1 ? value.quantity - 1 : 1 }
+//                 }
+//                 return value
+//             })
+//         },
+//         cartTotal: (state) => {
+//             const { totalPrice, totalQuantity } = state.cart.reduce((cartTotal, cartItems) => {
+//                 const { productPrice, quantity } = cartItems
+//                 const itemTotal = parseFloat(productPrice) * quantity
+//                 cartTotal.totalPrice += itemTotal
+//                 cartTotal.totalQuantity += quantity
+//                 return cartTotal
+//             }, {
+//                 totalPrice: 0,
+//                 totalQuantity: 0
+//             })
+//             state.TotalPrice = totalPrice
+//             state.TotalQuantity = totalQuantity
+//         },
+//         clearCart: (state) => {
+//             state.cart = [];
+//             state.TotalPrice = 0;
+//             state.TotalQuantity = 0;
+//         }
+//     },
+//     extraReducers: (builder) => {
+//         builder.addCase(saveCart.fulfilled, (state, actions) => {
+//             // console.log("Cart Save :- ", actions.payload)
+
+//         });
+//         builder.addCase(fetchCart.fulfilled, (state, actions) => {
+//             // console.log("FetchData :- ", actions.payload)
+//             state.cart = actions.payload.cartItems || [];
+//             state.TotalPrice = actions.payload.totalPrice || 0;
+//             // state.totalQuantity = actions.payload.totalQuantity || 0;
+//             state.TotalQuantity = actions.payload.totalQuantity || 0;
+//         })
+//     }
+// })
+
+
+// export const { addToCart, deleteCartItem, IncrementQuantity, DecrementQunatity, cartTotal, clearCart } = cartSlice.actions
+
+// export default cartSlice.reducer
+
+
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+
+const API_BASE = "https://full-stack-project-cw6d.onrender.com/api"
+
+export const saveCart = createAsyncThunk(
+    "cart/save",
+    async (cartData, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token")
+
+            const response = await fetch(`${API_BASE}/cart/save`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                // ✅ never send userId from the client — backend derives it from the JWT
+                body: JSON.stringify(cartData),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                return rejectWithValue(data)
+            }
+
+            return data
+        } catch (error) {
+            return rejectWithValue({ message: error.message })
         }
-    })
-    return await response.json()
-})
+    }
+)
+
+export const fetchCart = createAsyncThunk(
+    "cart/fetch",
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem("token")
+
+            const response = await fetch(`${API_BASE}/cart`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                return rejectWithValue(data)
+            }
+
+            return data
+        } catch (error) {
+            return rejectWithValue({ message: error.message })
+        }
+    }
+)
+
 const initialState = {
     cart: [],
     TotalPrice: 0,
@@ -83,13 +230,9 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, actions) => {
-
-            const find = state.cart.findIndex((value) => {
-                return value._id === actions.payload._id
-            })
-
+            const find = state.cart.findIndex((value) => value._id === actions.payload._id)
             if (find != -1) {
-                state.cart[find] = ({ ...state.cart[find], quantity: state.cart[find].quantity + 1 })
+                state.cart[find] = { ...state.cart[find], quantity: state.cart[find].quantity + 1 }
             } else {
                 state.cart.push({ ...actions.payload, quantity: 1 })
             }
@@ -101,56 +244,44 @@ export const cartSlice = createSlice({
             }
         },
         IncrementQuantity: (state, actions) => {
-            state.cart = state.cart.map((value) => {
-                if (value._id === actions.payload._id) {
-                    return { ...value, quantity: value.quantity + 1 }
-                }
-                return value
-            })
+            state.cart = state.cart.map((value) =>
+                value._id === actions.payload._id ? { ...value, quantity: value.quantity + 1 } : value
+            )
         },
         DecrementQunatity: (state, actions) => {
-            state.cart = state.cart.map((value) => {
-                if (value._id === actions.payload._id) {
-                    return { ...value, quantity: value.quantity > 1 ? value.quantity - 1 : 1 }
-                }
-                return value
-            })
+            state.cart = state.cart.map((value) =>
+                value._id === actions.payload._id
+                    ? { ...value, quantity: value.quantity > 1 ? value.quantity - 1 : 1 }
+                    : value
+            )
         },
         cartTotal: (state) => {
-            const { totalPrice, totalQuantity } = state.cart.reduce((cartTotal, cartItems) => {
-                const { productPrice, quantity } = cartItems
-                const itemTotal = parseFloat(productPrice) * quantity
-                cartTotal.totalPrice += itemTotal
-                cartTotal.totalQuantity += quantity
-                return cartTotal
-            }, {
-                totalPrice: 0,
-                totalQuantity: 0
-            })
+            const { totalPrice, totalQuantity } = state.cart.reduce(
+                (cartTotal, cartItems) => {
+                    const { productPrice, quantity } = cartItems
+                    cartTotal.totalPrice += parseFloat(productPrice) * quantity
+                    cartTotal.totalQuantity += quantity
+                    return cartTotal
+                },
+                { totalPrice: 0, totalQuantity: 0 }
+            )
             state.TotalPrice = totalPrice
             state.TotalQuantity = totalQuantity
         },
         clearCart: (state) => {
-            state.cart = [];
-            state.TotalPrice = 0;
-            state.TotalQuantity = 0;
+            state.cart = []
+            state.TotalPrice = 0
+            state.TotalQuantity = 0
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(saveCart.fulfilled, (state, actions) => {
-            // console.log("Cart Save :- ", actions.payload)
-
-        });
         builder.addCase(fetchCart.fulfilled, (state, actions) => {
-            // console.log("FetchData :- ", actions.payload)
-            state.cart = actions.payload.cartItems || [];
-            state.TotalPrice = actions.payload.totalPrice || 0;
-            // state.totalQuantity = actions.payload.totalQuantity || 0;
-            state.TotalQuantity = actions.payload.totalQuantity || 0;
+            state.cart = actions.payload.cartItems || []
+            state.TotalPrice = actions.payload.totalPrice || 0
+            state.TotalQuantity = actions.payload.totalQuantity || 0
         })
     }
 })
-
 
 export const { addToCart, deleteCartItem, IncrementQuantity, DecrementQunatity, cartTotal, clearCart } = cartSlice.actions
 
