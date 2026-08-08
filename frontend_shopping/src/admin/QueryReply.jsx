@@ -22,7 +22,7 @@ const QueryReply = () => {
       );
       const result = await response.json();
       if (response.ok) {
-        console.log(result);
+        // console.log(result);
         // setQuery({
         //   to: result.data.Email,
         // });
