@@ -175,52 +175,97 @@ const userQueryController = async (req, res) => {
     }
 };
 
+// const saveCartDataController = async (req, res) => {
+//     try {
+//         const { userId, cartItems, totalPrice, totalQuantity } = req.body
+//         console.log("Save Cart Request:", {
+//             userId,
+//             cartItems,
+//             totalPrice,
+//             totalQuantity
+//         });
+//         let cart = await cartCollection.findOne({ userId })
+
+//         if (cart) {
+//             cart.cartItems = cartItems;
+//             cart.totalPrice = totalPrice;
+//             cart.totalQuantity = totalQuantity;
+//             await cart.save()
+//         }
+//         else {
+//             cart = new cartCollection({
+//                 userId: userId,
+//                 cartItems: cartItems,
+//                 totalPrice: totalPrice,
+//                 totalQuantity: totalQuantity
+//             });
+//             await cart.save()
+//         }
+
+//         res.status(200).json({ message: "Cart Save Successfully" })
+//     } catch (error) {
+
+//         res.status(500).json({ message: "Internal Server Error" })
+//     }
+// };
+
+// const getCartController = async (req, res) => {
+//     try {
+//         const userId = req.params.id
+//         const cart = await cartCollection.findOne({ userId })
+//         res.status(200).json(cart)
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal server error." })
+//     }
+// };
+
+
 const saveCartDataController = async (req, res) => {
     try {
-        const { userId, cartItems, totalPrice, totalQuantity } = req.body
-        console.log("Save Cart Request:", {
-            userId,
-            cartItems,
-            totalPrice,
-            totalQuantity
-        });
-        let cart = await cartCollection.findOne({ userId })
+        // ✅ userId comes from the verified JWT, never from the client body
+        const userId = req.user?.id
 
-        if (cart) {
-            cart.cartItems = cartItems;
-            cart.totalPrice = totalPrice;
-            cart.totalQuantity = totalQuantity;
-            await cart.save()
-        }
-        else {
-            cart = new cartCollection({
-                userId: userId,
-                cartItems: cartItems,
-                totalPrice: totalPrice,
-                totalQuantity: totalQuantity
-            });
-            await cart.save()
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized: user not identified" })
         }
 
-        res.status(200).json({ message: "Cart Save Successfully" })
+        const { cartItems = [], totalPrice = 0, totalQuantity = 0 } = req.body
+
+        console.log("Save Cart Request:", { userId, cartItems, totalPrice, totalQuantity })
+
+        const cart = await cartCollection.findOneAndUpdate(
+            { userId },
+            { userId, cartItems, totalPrice, totalQuantity },
+            { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
+        )
+
+        return res.status(200).json({ message: "Cart Save Successfully", data: cart })
     } catch (error) {
-
-        res.status(500).json({ message: "Internal Server Error" })
+        console.error("Cart Error:", error)
+        return res.status(500).json({ message: error.message })
     }
-};
-
-
-
+}
 
 const getCartController = async (req, res) => {
     try {
-        const userId = req.params.id
+        // ✅ same source of truth as save — the authenticated user, not a route param
+        const userId = req.user?.id
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized: user not identified" })
+        }
+
         const cart = await cartCollection.findOne({ userId })
-        res.status(200).json(cart)
+
+        // No cart yet is a normal state, not an error
+        return res.status(200).json(
+            cart || { userId, cartItems: [], totalPrice: 0, totalQuantity: 0 }
+        )
     } catch (error) {
-        res.status(500).json({ message: "Internal server error." })
+        console.error("Cart Error:", error)
+        return res.status(500).json({ message: error.message })
     }
-};
+}
 
 const searchController = async (req, res) => {
     try {
