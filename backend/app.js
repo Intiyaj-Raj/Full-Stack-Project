@@ -48,7 +48,7 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            "https://shopbag-ecommerce-webapp.vercel.app/"
+            "https://shopbag-ecommerce-webapp.vercel.app"
         ],
         credentials: true
     })

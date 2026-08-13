@@ -12,19 +12,30 @@ const Product = () => {
   const [product, setProduct] = useState([]);
 
   const dispatch = useDispatch();
+  // async function productData(selectCategory = "All") {
+  //   try {
+  //     // const response = await fetch(`/api/userproducts?category=${selectCategory}`)
+  //     const response = await fetch(
+  //       `https://full-stack-project-cw6d.onrender.com/api/userproducts?category=${selectCategory}`,
+  //     );
+  //     const record = await response.json();
+  //     setProduct(record.data);
+  //   } catch (error) {
+  //     toast.error("Something went wrong!");
+  //   }
+  // }
   async function productData(selectCategory = "All") {
     try {
-      // const response = await fetch(`/api/userproducts?category=${selectCategory}`)
       const response = await fetch(
         `https://full-stack-project-cw6d.onrender.com/api/userproducts?category=${selectCategory}`,
       );
       const record = await response.json();
-      setProduct(record.data);
+      setProduct(Array.isArray(record.data) ? record.data : []);
     } catch (error) {
       toast.error("Something went wrong!");
+      setProduct([]);
     }
   }
-
   useEffect(() => {
     productData(category);
   }, [category]);
