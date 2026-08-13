@@ -141,24 +141,51 @@ const loginDataController = async (req, res) => {
 };
 
 
+// const userProductController = async (req, res) => {
+//     try {
+//         const category = req.query.category
+//         let filter = { productStatus: "In-Stock" }
+
+//         if (category && category.toLowerCase() !== "all") {
+//             filter.productCategory = category.toLowerCase()
+//         }
+
+//         const record = await productCollection.find(filter)
+
+//         res.status(200).json({ data: record })
+
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal server error." })
+//     }
+// };
+
 const userProductController = async (req, res) => {
     try {
-        const category = req.query.category
-        let filter = { productStatus: "In-Stock" }
+        const category = req.query.category;
+
+        let filter = {
+            productStatus: "In-Stock"
+        };
 
         if (category && category.toLowerCase() !== "all") {
-            filter.productCategory = category.toLowerCase()
+            filter.productCategory = category.toLowerCase();
         }
 
-        const record = await productCollection.find(filter)
+        const record = await productCollection.find(filter);
 
-        res.status(200).json({ data: record })
+        res.status(200).json({
+            data: record
+        });
 
     } catch (error) {
-        res.status(500).json({ message: "Internal server error." })
+        console.error("userProductController Error:", error);
+
+        res.status(500).json({
+            message: "Internal server error.",
+            error: error.message
+        });
     }
 };
-
 const userQueryController = async (req, res) => {
     try {
         const { userName, userEmail, userQuery } = req.body
