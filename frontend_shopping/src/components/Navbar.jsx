@@ -40,8 +40,8 @@ const Navbar = () => {
             <img src={LogoShopping} alt="Logo" className="h-28 w-auto" />
           </div>
           {/* Search Bar */}
-          <div className="flex-1 mx-4">
-            <div className="relative">
+          <div className="w-full md:w-[70%] lg:w-[50%] mx-auto">
+            <div className="relative flex items-center px-4 py-2">
               <input
                 type="text"
                 name=""
@@ -53,7 +53,7 @@ const Navbar = () => {
                 }}
                 readOnly
               />
-              <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-lg" />
+              <FaSearch className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-600 text-lg" />
             </div>
           </div>
           {/* Menu */}
